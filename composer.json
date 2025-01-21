@@ -1,0 +1,72 @@
+{
+    "name": "ngmy/laravel-ide-helper-eloquent",
+    "description": "Laravel IDE Helper Eloquent generates a stub file to enable autocompletion for QueryBuilder methods on models in IDEs/editors that do not support @mixin.",
+    "license": "MIT",
+    "type": "library",
+    "version": "0.1.0",
+    "keywords": [
+        "laravel",
+        "autocomplete",
+        "ide",
+        "helper",
+        "phpstorm",
+        "netbeans",
+        "sublime",
+        "codeintel",
+        "phpdoc",
+        "dev",
+        "eloquent"
+    ],
+    "authors": [
+        {
+            "name": "Yuta Nagamiya",
+            "email": "y.nagamiya@gmail.com"
+        }
+    ],
+    "homepage": "https://github.com/ngmy/laravel-ide-helper-eloquent",
+    "require": {
+        "php": "^8.2",
+        "laravel/framework": "^11.15",
+        "nikic/php-parser": "^5.3"
+    },
+    "require-dev": {
+        "bamarni/composer-bin-plugin": "^1.8",
+        "ergebnis/composer-normalize": "^2.45",
+        "larastan/larastan": "^3.0"
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "Ngmy\\LaravelIdeHelperEloquent\\": "src/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "bamarni/composer-bin-plugin": true,
+            "ergebnis/composer-normalize": true
+        },
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
+    "extra": {
+        "bamarni-bin": {
+            "bin-links": false,
+            "forward-command": true,
+            "target-directory": "vendor-bin"
+        },
+        "laravel": {
+            "providers": [
+                "Ngmy\\LaravelIdeHelperEloquent\\ServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "fmt": [
+            "@php vendor-bin/php-cs-fixer/vendor/bin/php-cs-fixer fix --allow-risky=yes"
+        ],
+        "lint": [
+            "@php vendor/bin/phpstan analyse"
+        ]
+    }
+}
