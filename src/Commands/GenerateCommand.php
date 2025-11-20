@@ -6,15 +6,9 @@ namespace Ngmy\LaravelIdeHelperEloquent\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
-use PhpParser\Node;
-use PhpParser\Node\Identifier;
-use PhpParser\Node\Name;
-use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\Namespace_;
+use Ngmy\LaravelIdeHelperEloquent\NodeVisitors\EloquentStubVisitor;
 use PhpParser\NodeTraverser;
-use PhpParser\NodeVisitorAbstract;
 use PhpParser\ParserFactory;
-use PhpParser\PrettyPrinter\Standard;
 
 final class GenerateCommand extends Command
 {
@@ -49,33 +43,14 @@ final class GenerateCommand extends Command
             throw new \RuntimeException('Failed to parse the AST');
         }
 
+        $outputFileName = '_ide_helper_eloquent.php';
+        $outputFilePath = base_path($outputFileName);
+
         $traverser = new NodeTraverser();
-        $traverser->addVisitor(
-            new class extends NodeVisitorAbstract {
-                public function enterNode(Node $node)
-                {
-                    if ($node instanceof Class_ && 'Eloquent' === (string) $node->name) {
-                        $node->name = new Identifier('Model');
-                        $node->extends = null;
-
-                        $ast = new Namespace_(new Name('Illuminate\Database\Eloquent'), [
-                            $node,
-                        ]);
-
-                        $eloquentIdeHelperPath = base_path('_ide_helper_eloquent.php');
-
-                        $printer = new Standard();
-
-                        File::put($eloquentIdeHelperPath, $printer->prettyPrintFile([$ast]));
-                    }
-
-                    return null;
-                }
-            }
-        );
+        $traverser->addVisitor(new EloquentStubVisitor($outputFilePath));
         $traverser->traverse($ast);
 
-        $this->info('A new Eloquent stub file was written to _ide_helper_eloquent.php');
+        $this->info("A new Eloquent stub file was written to {$outputFileName}");
 
         return Command::SUCCESS;
     }
