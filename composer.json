@@ -25,7 +25,7 @@
     "homepage": "https://github.com/ngmy/laravel-ide-helper-eloquent",
     "require": {
         "php": "^8.2",
-        "laravel/framework": "^11.15",
+        "laravel/framework": "^11.15 || ^12.0",
         "nikic/php-parser": "^5.3"
     },
     "require-dev": {
