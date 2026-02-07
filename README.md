@@ -7,7 +7,8 @@ support `@mixin`, such as the free version of Intelephense.
 
 ## Motivation
 
-https://github.com/bmewburn/vscode-intelephense/issues/708
+- https://github.com/bmewburn/vscode-intelephense/issues/708
+- https://github.com/barryvdh/laravel-ide-helper/issues/1395
 
 ## Installation
 
