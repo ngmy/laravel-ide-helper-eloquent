@@ -1,0 +1,38 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Illuminate\Database\Eloquent;
+
+/**
+ * @template TModel of \Illuminate\Database\Eloquent\Model
+ */
+class Builder
+{
+    /**
+     * Apply Scope to Eloquent\Builder.
+     *
+     * @param class-string<Scoped>|Scope $scope
+     * @param mixed                      ...$parameters
+     *
+     * @return Builder<TModel>
+     *
+     * @see https://github.com/mpyw/laravel-local-class-scope
+     */
+    public function scoped($scope, ...$parameters) {}
+}
+
+class Model
+{
+    /**
+     * Apply Scope to Eloquent\Builder.
+     *
+     * @param class-string<Scope>|Scope $scope
+     * @param mixed                     ...$parameters
+     *
+     * @return Builder<static>
+     *
+     * @see https://github.com/mpyw/laravel-local-class-scope
+     */
+    public static function scoped($scope, ...$parameters) {}
+}

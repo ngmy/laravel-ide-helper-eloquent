@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Ngmy\LaravelIdeHelperEloquent;
 
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
-use Ngmy\LaravelIdeHelperEloquent\Commands\GenerateCommand;
+use Ngmy\LaravelIdeHelperEloquent\Commands\EloquentHelpersCommand;
 
 final class ServiceProvider extends BaseServiceProvider
 {
@@ -21,7 +21,7 @@ final class ServiceProvider extends BaseServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->commands([
-                GenerateCommand::class,
+                EloquentHelpersCommand::class,
             ]);
         }
     }

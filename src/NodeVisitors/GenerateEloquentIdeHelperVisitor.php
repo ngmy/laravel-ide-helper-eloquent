@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Ngmy\LaravelIdeHelperEloquent\NodeVisitors;
 
-use Illuminate\Support\Facades\File;
-use Ngmy\LaravelIdeHelperEloquent\PrettyPrinters\Standard;
+use Ngmy\LaravelIdeHelperEloquent\Contracts\AstProvider;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
@@ -15,41 +14,33 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
 
-class EloquentStubVisitor extends NodeVisitorAbstract
+class GenerateEloquentIdeHelperVisitor extends NodeVisitorAbstract implements AstProvider
 {
     /**
-     * The output ASTs.
+     * The generated AST.
      *
-     * @var list<Namespace_>
+     * @var Namespace_[]
      */
-    private array $outputAsts = [];
-
-    /**
-     * Constructor.
-     *
-     * @param string $outputFilePath The output file path
-     */
-    public function __construct(
-        private readonly string $outputFilePath,
-    ) {}
+    private array $generatedAst = [];
 
     #[\Override]
     public function enterNode(Node $node)
     {
         if ($node instanceof Class_ && 'Eloquent' === (string) $node->name) {
-            $this->outputAsts[] = $this->createModelAst($node);
-            $this->outputAsts[] = $this->createRelationAst($node);
+            $this->generatedAst[] = $this->createModelAst($node);
+            $this->generatedAst[] = $this->createRelationAst($node);
         }
 
         return null;
     }
 
+    /**
+     * @return Namespace_[] The generated AST
+     */
     #[\Override]
-    public function afterTraverse(array $nodes)
+    public function getGeneratedAst(): array
     {
-        $this->writeOutputFile();
-
-        return null;
+        return $this->generatedAst;
     }
 
     /**
@@ -156,19 +147,5 @@ class EloquentStubVisitor extends NodeVisitorAbstract
                 $relationNode,
             ],
         );
-    }
-
-    /**
-     * Write the output ASTs to the output file.
-     */
-    private function writeOutputFile(): void
-    {
-        if (empty($this->outputAsts)) {
-            return;
-        }
-
-        $printer = new Standard();
-
-        File::put($this->outputFilePath, $printer->prettyPrintFile($this->outputAsts));
     }
 }
