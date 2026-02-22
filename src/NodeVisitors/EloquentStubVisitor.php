@@ -11,6 +11,7 @@ use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
 
@@ -96,10 +97,22 @@ class EloquentStubVisitor extends NodeVisitorAbstract
         );
         $relationNode->setDocComment($docComment);
 
-        foreach ($relationNode->getMethods() as $method) {
+        $newStmts = [];
+
+        foreach ($relationNode->stmts as $stmt) {
+            if (!$stmt instanceof ClassMethod) {
+                $newStmts[] = $stmt;
+
+                continue;
+            }
+
+            $method = clone $stmt;
+
             $docComment = $method->getDocComment();
 
             if (null === $docComment) {
+                $newStmts[] = $method;
+
                 continue;
             }
 
@@ -131,7 +144,11 @@ class EloquentStubVisitor extends NodeVisitorAbstract
 
             $newDocComment = new Doc($newDocCommentText);
             $method->setDocComment($newDocComment);
+
+            $newStmts[] = $method;
         }
+
+        $relationNode->stmts = $newStmts;
 
         return new Namespace_(
             new Name('Illuminate\Database\Eloquent\Relations'),
